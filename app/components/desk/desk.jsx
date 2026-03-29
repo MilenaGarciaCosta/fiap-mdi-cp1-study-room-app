@@ -2,6 +2,12 @@ import { Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function Desk({ deskId, selectedDesk, setSelectedDesk }) {
   const toggleDesk = (deskId) => {
+
+    if(deskId === selectedDesk){
+      setSelectedDesk(null);
+      return;
+    }
+
     setSelectedDesk(deskId);
   };
   return (
