@@ -65,7 +65,7 @@ export default function MapaSala() {
         disabled={isReservationDisabled}
         onPress={() =>
           router.push({
-            pathname: "/", // Adicionar rota da tela de sala apra tela de informações do aluno
+            pathname: "/studentInfo",
             params: { classRoomNumber, selectedDesk },
           })
         }
