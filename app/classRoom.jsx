@@ -18,19 +18,29 @@ export default function MapaSala() {
 
   return (
     <View style={styles.container}>
-      <Text>Sala N°{classRoomNumber}</Text>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text style={styles.title}>MAPA DA SALA</Text>
+        <Text style={styles.subtitle}>Sala Nº {classRoomNumber}</Text>
+      </View>
+
+      {/* Quadro / Frente */}
+      <View style={styles.board}>
+        <Text style={styles.boardText}>QUADRO</Text>
+      </View>
 
       <ScrollView
         style={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.classroomMap}>
+          {/* Coluna A */}
           <View style={styles.column}>
             {[1, 2, 3, 4].map((row) => (
               <View key={`col1-row${row}`} style={styles.row}>
                 {[1, 2, 3, 4].map((col) => (
                   <Desk
-                    key={`col1-${row}-${col}`}
+                    key={`A-${row}-${col}`}
                     deskId={`A${row}${col}`}
                     selectedDesk={selectedDesk}
                     setSelectedDesk={setSelectedDesk}
@@ -39,12 +49,17 @@ export default function MapaSala() {
               </View>
             ))}
           </View>
+
+          {/* Corredor */}
+          <View style={styles.aisle} />
+
+          {/* Coluna B */}
           <View style={styles.column}>
             {[1, 2, 3, 4].map((row) => (
               <View key={`col2-row${row}`} style={styles.row}>
                 {[1, 2, 3].map((col) => (
                   <Desk
-                    key={`col2-${row}-${col}`}
+                    key={`B-${row}-${col}`}
                     deskId={`B${row}${col}`}
                     selectedDesk={selectedDesk}
                     setSelectedDesk={setSelectedDesk}
@@ -56,11 +71,11 @@ export default function MapaSala() {
         </View>
       </ScrollView>
 
+      {/* Botão */}
       <TouchableOpacity
         style={[
-          isReservationDisabled
-            ? styles.reserveButtonDisabled
-            : styles.reserveButtonAbled,
+          styles.reserveButton,
+          isReservationDisabled && styles.reserveButtonDisabled,
         ]}
         disabled={isReservationDisabled}
         onPress={() =>
@@ -70,7 +85,11 @@ export default function MapaSala() {
           })
         }
       >
-        <Text style={styles.reserveText}>Reservar</Text>
+        <Text style={styles.reserveText}>
+          {isReservationDisabled
+            ? "Selecione uma mesa"
+            : `Reservar ${selectedDesk}`}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -79,43 +98,82 @@ export default function MapaSala() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 8,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
+    backgroundColor: "#0B0B0F",
+    padding: 16,
   },
+
+  header: {
+    marginBottom: 16,
+  },
+
+  title: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    letterSpacing: 2,
+  },
+
+  subtitle: {
+    color: "#E83D84",
+    fontSize: 16,
+    marginTop: 4,
+  },
+
+  board: {
+    backgroundColor: "#1A1A22",
+    borderRadius: 8,
+    padding: 10,
+    alignItems: "center",
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#E83D84",
+  },
+
+  boardText: {
+    color: "#E83D84",
+    fontWeight: "bold",
+  },
+
   scrollContent: {
     flex: 1,
-    marginBottom: 12,
   },
+
   classroomMap: {
     flexDirection: "row",
-    gap: 8,
     justifyContent: "center",
-    paddingHorizontal: 4,
+    alignItems: "center",
   },
+
   column: {
-    gap: 6,
+    gap: 10,
   },
+
   row: {
     flexDirection: "row",
-    gap: 6,
+    gap: 10,
   },
-  reserveButtonAbled: {
+
+  aisle: {
+    width: 30,
+  },
+
+  reserveButton: {
     backgroundColor: "#E83D84",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 6,
+    paddingVertical: 14,
+    borderRadius: 8,
     alignItems: "center",
-    justifyContent: "center",
+    marginTop: 10,
+    shadowColor: "#E83D84",
+    shadowOpacity: 0.6,
+    shadowRadius: 10,
+    elevation: 5,
   },
+
   reserveButtonDisabled: {
-    backgroundColor: "#573e48",
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 6,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#333",
+    shadowOpacity: 0,
   },
+
   reserveText: {
     color: "#fff",
     fontSize: 16,
