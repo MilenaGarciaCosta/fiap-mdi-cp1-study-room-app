@@ -89,7 +89,7 @@ https://youtube.com/shorts/TBPGJQblL-c?feature=share
 ## e) Decisões Técnicas
 ### Estrutura do Projeto
 
-O projeto foi desenvolvido utilizando React Native com Expo, estruturado em 3 telas separadas (andar/sala, assento e formulário), com um HUD fixo na parte inferior da tela que facilita a navegação dentro do app.
+O projeto foi desenvolvido utilizando React Native com Expo, estruturado em 3 telas separadas (andar/sala, assento e formulário)
 
 ### Hooks Utilizados
 
