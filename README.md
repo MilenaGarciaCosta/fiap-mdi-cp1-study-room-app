@@ -99,7 +99,7 @@ useState → controla o estado do assento selecionado (selectedDesk)
 
 ### Navegação
 
-A navegação foi implementada com Expo Router, pode ser utilizada tanto pelo HUD fixo na parte inferior da tela ou pelos botões que possuem em cada tela, sendo elas:
+A navegação foi implementada com Expo Router, pode ser utilizada em cada tela, sendo elas:
 
 Tela de escolha de andar e sala <br>
 Mapeamento da sala com escolha de assento <br>
