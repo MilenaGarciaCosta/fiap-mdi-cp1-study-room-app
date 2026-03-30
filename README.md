@@ -4,7 +4,7 @@
 
 ### Nome do App
 
-**Study Room**
+## **Study Room**
 
 ## Descrição do Problema
 
@@ -64,19 +64,20 @@ Rode em um emulador Android
 
 ### Prints das Telas
 
-Tela 1: Escolha de Andar e Sala
+Tela 1: Escolha de Andar e Sala <br>
+
 <img width="250" height="600" alt="image" src="https://github.com/user-attachments/assets/62561f21-2a73-40f5-b0ef-7f751f9923b7" />
 <br>
 
 
 
-Tela 2: Mapeamento da sala e escolha de assento
+Tela 2: Mapeamento da sala e escolha de assento <br>
 <img width="250" height="600" alt="image" src="https://github.com/user-attachments/assets/7051c326-0a58-40d9-9a31-07623d610044" />
 <br>
 
 
 
-Tela 3: Formulário para preenchimento das informações do aluno
+Tela 3: Formulário para preenchimento das informações do aluno <br>
 <img width="250" height="600" alt="image" src="https://github.com/user-attachments/assets/5a04b687-bcfb-46f2-9580-c1170f0cabc6" />
 <br>
 
