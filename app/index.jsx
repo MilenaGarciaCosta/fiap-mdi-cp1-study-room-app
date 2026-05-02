@@ -1,11 +1,29 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home() {
+  const [userName, setUserName] = useState('');
   const router = useRouter();
   const [selectedFloor, setSelectedFloor] = useState(1);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const session = await AsyncStorage.getItem('@user_session');
+        if (session) {
+          const userData = JSON.parse(session);
+          // Define o nome ou usa 'Usuário' como fallback
+          setUserName(userData.username || userData.name || 'Usuário');
+        }
+      } catch (e) {
+        console.error("Erro ao carregar sessão", e);
+      }
+    };
+    loadUserData();
+  }, []);
 
   const changeFloor = (direction) => {
     setSelectedFloor((prev) => {
@@ -42,8 +60,20 @@ export default function Home() {
     </TouchableOpacity>
   );
 
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem('@user_session');
+      router.replace('/login');
+    } catch (error) {
+      console.error("Erro ao sair:", error);
+    }
+  };
   return (
     <SafeAreaView style={styles.safeContainer}>
+      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+    <Text style={styles.logoutText}>SAIR</Text>
+  </TouchableOpacity>
+
       <View style={styles.container}>
         
         <View style={styles.header}>
@@ -52,7 +82,7 @@ export default function Home() {
             style={styles.logo}
             resizeMode="contain" 
           />
-          <Text style={styles.title}>Olá! Seja bem vindo(a)</Text>
+          <Text style={styles.title}>Olá, <Text style={styles.userName}>{userName}</Text>! Seja bem vindo(a)</Text>
           <Text style={styles.subtitle}>Selecione a sala que deseja reservar</Text>
         </View>
 
@@ -107,33 +137,43 @@ export default function Home() {
 
 const styles = StyleSheet.create({
   safeContainer: { flex: 1, backgroundColor: '#0B0B0F' },
-  container: { 
-    flex: 1, 
-    alignItems: 'center', 
-    paddingHorizontal: 24, 
-    paddingTop: 30, 
-    paddingBottom: 24 
-  },
-  
-  header: { alignSelf: 'stretch', alignItems: 'center' },
-  logo: { width: 140, height: 50, alignSelf: 'center', marginBottom: 16 },
-  title: { fontSize: 22, fontWeight: 'bold', color: '#fff', marginBottom: 8, textAlign: 'center' },
-  subtitle: { fontSize: 16, color: '#aaa', fontWeight: '400', textAlign: 'center' },
+container: { 
+  flex: 1, 
+  alignItems: 'center', 
+  paddingHorizontal: 24, 
+  paddingTop: 30, 
+  backgroundColor: '#0B0B0F',
+  justifyContent: 'flex-start',
+},
+header: { 
+  alignSelf: 'stretch', 
+  alignItems: 'center',
+  marginTop: 80, 
+  marginBottom: 5, 
+},
+userName: {
+  color: '#E91E63', // Cor destaque (mesma do seu botão ou logo)
+  fontWeight: 'bold',
+},
+logo: { width: 110, height: 35, marginBottom: 10 },
+title: { fontSize: 18, fontWeight: 'bold', color: '#fff', textAlign: 'center',marginTop: 5,},
+subtitle: { fontSize: 13, color: '#aaa', textAlign: 'center' },
 
-  contentWrapper: {
-      flex: 1,
-      width: '100%',
-      justifyContent: 'center',
-      alignItems: 'center',
-  },
-
-  mapContainer: {
-    width: '80%', 
-    aspectRatio: 0.5, 
-    backgroundColor: '#9f9f9f15', 
-    flexDirection: 'row',
-    justifyContent: 'space-between', 
-  },
+contentWrapper: {
+  flex: 1, 
+  width: '100%',
+  alignItems: 'center',
+  justifyContent: 'center', 
+},
+mapContainer: {
+  width: '75%', 
+  aspectRatio: 0.6, 
+  backgroundColor: '#9f9f9f05', 
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  padding: 10,
+  borderRadius: 12,
+},
 
   leftColumn:   { width: '25%', flexDirection: 'column' },
   centerColumn: { width: '31.25%', flexDirection: 'column' },
@@ -151,6 +191,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 8,
     elevation: 4,
+    borderRadius: 4,
   },
   
   roomStandard: { height: '17.647%', width: '100%' },
@@ -173,12 +214,18 @@ const styles = StyleSheet.create({
       borderColor: '#2A2A35',
   },
 
-  roomText: { fontSize: 16, fontWeight: 'bold', color: '#fff' },
+  roomText: { fontSize: 14, fontWeight: 'bold', color: '#fff' },
 
-  floorSelectorContainer: {
-    alignItems: 'center',
-    marginTop: 20,
-  },
+floorSelectorContainer: {
+  alignItems: 'center',
+  backgroundColor: '#1A1A22', 
+  paddingVertical: 10,
+  paddingHorizontal: 25,
+  borderRadius: 50,
+  borderWidth: 1,
+  borderColor: '#2A2A35',
+  marginTop: 10,
+},
   floorLabel: {
     fontSize: 14,
     color: '#aaa',
@@ -195,4 +242,33 @@ const styles = StyleSheet.create({
   },
   arrow: { fontSize: 26, color: '#E83D84', paddingHorizontal: 18 }, 
   floorNumber: { fontSize: 26, fontWeight: 'bold', color: '#fff', minWidth: 40, textAlign: 'center' },
+
+logoutButton: {
+  position: 'absolute',
+  top: 45, // Ajustado para ficar alinhado com o topo do notch
+  right: 20,
+  zIndex: 10,
+  paddingVertical: 4,
+  paddingHorizontal: 10,
+  borderWidth: 1,
+  borderColor: '#E83D84',
+  borderRadius: 4,
+},
+logoutText: {
+  color: '#E83D84',
+  fontSize: 12,
+  fontWeight: 'bold',
+},
+
+// Melhore o seletor de andar trocando o seu floorSelectorContainer por este:
+floorSelectorContainer: {
+  alignItems: 'center',
+  marginTop: 30,
+  backgroundColor: '#1A1A22', 
+  paddingVertical: 8,
+  paddingHorizontal: 20,
+  borderRadius: 30,
+  borderWidth: 1,
+  borderColor: '#2A2A35',
+},
 });
