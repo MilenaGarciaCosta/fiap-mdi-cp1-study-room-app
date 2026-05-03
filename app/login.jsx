@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [feedback, setFeedback] = useState('');
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleLogin = async () => {
     setFeedback('');
@@ -24,12 +26,7 @@ export default function Login() {
         const userData = JSON.parse(storedUser);
         
         if (userData.password === password) {
-          // 1. Valida credenciais contra dados persistidos (OK)
-          // 2. Cria a sessão persistida (OK)
-          await AsyncStorage.setItem('@user_session', JSON.stringify(userData));
-          
-          // 3. Redireciona para a tela principal (OK)
-          router.replace('/'); 
+          await login(userData); 
         } else {
           setFeedback("Senha incorreta.");
         }

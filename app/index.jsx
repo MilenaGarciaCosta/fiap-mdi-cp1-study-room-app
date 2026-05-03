@@ -1,29 +1,14 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Home() {
-  const [userName, setUserName] = useState('');
   const router = useRouter();
   const [selectedFloor, setSelectedFloor] = useState(1);
-
-  useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const session = await AsyncStorage.getItem('@user_session');
-        if (session) {
-          const userData = JSON.parse(session);
-          // Define o nome ou usa 'Usuário' como fallback
-          setUserName(userData.username || userData.name || 'Usuário');
-        }
-      } catch (e) {
-        console.error("Erro ao carregar sessão", e);
-      }
-    };
-    loadUserData();
-  }, []);
+  const { user, logout } = useAuth();
+  const userName = user?.username || user?.name || 'Usuário';
 
   const changeFloor = (direction) => {
     setSelectedFloor((prev) => {
@@ -60,22 +45,13 @@ export default function Home() {
     </TouchableOpacity>
   );
 
-  const handleLogout = async () => {
-    try {
-      await AsyncStorage.removeItem('@user_session');
-      router.replace('/login');
-    } catch (error) {
-      console.error("Erro ao sair:", error);
-    }
-  };
   return (
     <SafeAreaView style={styles.safeContainer}>
-      <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-    <Text style={styles.logoutText}>SAIR</Text>
-  </TouchableOpacity>
+      <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+        <Text style={styles.logoutText}>SAIR</Text>
+      </TouchableOpacity>
 
       <View style={styles.container}>
-        
         <View style={styles.header}>
           <Image 
             source={require('../assets/logo.png')} 
