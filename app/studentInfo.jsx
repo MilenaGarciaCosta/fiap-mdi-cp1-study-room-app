@@ -1,5 +1,5 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -8,13 +8,16 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import SuccessModal from "./components/alert/alert";
 import { useAuth } from "../contexts/AuthContext";
+
+const RM_STORAGE_KEY = "@user_rm";
 
 export default function StudentInfoForm() {
   const router = useRouter();
   const { classRoomNumber, selectedDesk } = useLocalSearchParams();
-  
+
   const { user } = useAuth();
 
   const [name, setName] = useState(user?.name || "");
@@ -24,9 +27,30 @@ export default function StudentInfoForm() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
+  // Load saved RM on mount
+  useEffect(() => {
+    const loadRm = async () => {
+      try {
+        const savedRm = await AsyncStorage.getItem(RM_STORAGE_KEY);
+        if (savedRm) {
+          setRm(savedRm);
+        }
+      } catch (error) {
+        console.error("Erro ao carregar RM:", error);
+      }
+    };
+    loadRm();
+  }, []);
+
   const isFormIncomplete = !name || !rm || !entryTime || !exitTime;
 
-  const handleFinalizeReservation = () => {
+  const handleFinalizeReservation = async () => {
+    try {
+      // Save RM for future reservations
+      await AsyncStorage.setItem(RM_STORAGE_KEY, rm);
+    } catch (error) {
+      console.error("Erro ao salvar RM:", error);
+    }
     setIsModalVisible(true);
   };
 
