@@ -21,7 +21,6 @@ export default function StudentInfoForm() {
   const { user } = useAuth();
 
   const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState("");
   const [rm, setRm] = useState("");
   const [entryTime, setEntryTime] = useState("");
   const [exitTime, setExitTime] = useState("");
@@ -44,7 +43,7 @@ export default function StudentInfoForm() {
     loadRm();
   }, []);
 
-  const isFormIncomplete = !name || !email || !rm || !entryTime || !exitTime;
+  const isFormIncomplete = !name || !rm || !entryTime || !exitTime;
 
   const validateForm = () => {
     let newErrors = {};
@@ -53,12 +52,6 @@ export default function StudentInfoForm() {
     const nameRegex = /^[a-zA-ZÀ-ÿ]+(?:\s+[a-zA-ZÀ-ÿ]+)+$/;
     if (!nameRegex.test(name.trim())) {
       newErrors.name = "Insira nome e sobrenome usando apenas letras.";
-    }
-
-    // Validação de E-mail
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      newErrors.email = "Insira um e-mail válido.";
     }
 
     // Validação de RM
@@ -170,23 +163,6 @@ export default function StudentInfoForm() {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>E-mail</Text>
-          <TextInput
-            style={[styles.input, errors.email && styles.inputError]}
-            placeholder="Digite o e-mail"
-            placeholderTextColor="#666"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-              if (errors.email) setErrors((prev) => ({ ...prev, email: null }));
-            }}
-          />
-          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-        </View>
-
-        <View style={styles.inputGroup}>
           <Text style={styles.label}>RM</Text>
           <TextInput
             style={[styles.input, errors.rm && styles.inputError]}
@@ -261,7 +237,6 @@ export default function StudentInfoForm() {
         onClose={handleConfirm}
         name={name}
         rm={rm}
-        email={email}
         entryTime={entryTime}
         exitTime={exitTime}
         classRoomNumber={classRoomNumber}
