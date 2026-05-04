@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, SafeAreaView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -19,8 +19,10 @@ export default function Login() {
     }
 
     try {
-      const userKey = `@user_${email.toLowerCase()}`;
-      const storedUser = await AsyncStorage.getItem(userKey);
+      const safeEmailKey = email.toLowerCase().replace('@', '_');
+      const userKey = `user_${safeEmailKey}`;
+      
+      const storedUser = await SecureStore.getItemAsync(userKey);
       
       if (storedUser) {
         const userData = JSON.parse(storedUser);

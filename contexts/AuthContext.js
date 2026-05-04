@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 const AuthContext = createContext({});
 
@@ -10,7 +10,8 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const loadSession = async () => {
       try {
-        const session = await AsyncStorage.getItem('@user_session');
+        // Recupera a sessao de forma segura
+        const session = await SecureStore.getItemAsync('user_session');
         if (session) {
           setUser(JSON.parse(session));
         }
@@ -24,12 +25,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (userData) => {
-    await AsyncStorage.setItem('@user_session', JSON.stringify(userData));
+    await SecureStore.setItemAsync('user_session', JSON.stringify(userData));
     setUser(userData);
   };
 
   const logout = async () => {
-    await AsyncStorage.removeItem('@user_session');
+    await SecureStore.deleteItemAsync('user_session');
     setUser(null);
   };
 

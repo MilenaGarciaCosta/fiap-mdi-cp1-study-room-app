@@ -8,11 +8,11 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from 'expo-secure-store';
 import SuccessModal from "./components/alert/alert";
 import { useAuth } from "../contexts/AuthContext";
 
-const RM_STORAGE_KEY = "@user_rm";
+const RM_STORAGE_KEY = "user_rm";
 
 export default function StudentInfoForm() {
   const router = useRouter();
@@ -27,11 +27,11 @@ export default function StudentInfoForm() {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-  // Load saved RM on mount
+  // Carrega o RM salvo de forma segura ao montar o componente
   useEffect(() => {
     const loadRm = async () => {
       try {
-        const savedRm = await AsyncStorage.getItem(RM_STORAGE_KEY);
+        const savedRm = await SecureStore.getItemAsync(RM_STORAGE_KEY);
         if (savedRm) {
           setRm(savedRm);
         }
@@ -46,8 +46,8 @@ export default function StudentInfoForm() {
 
   const handleFinalizeReservation = async () => {
     try {
-      // Save RM for future reservations
-      await AsyncStorage.setItem(RM_STORAGE_KEY, rm);
+      // Salva o RM no cofre criptografado para reservas futuras
+      await SecureStore.setItemAsync(RM_STORAGE_KEY, rm);
     } catch (error) {
       console.error("Erro ao salvar RM:", error);
     }

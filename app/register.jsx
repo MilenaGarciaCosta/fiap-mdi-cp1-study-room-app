@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet, SafeAreaView } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import { useRouter } from 'expo-router';
 
 export default function Register() {
@@ -28,11 +28,14 @@ export default function Register() {
     }
 
     try {
-      // Salva os dados no AsyncStorage usando o e-mail como chave
-      const userKey = `@user_${email.toLowerCase()}`;
+      // Cria a chave e estrutura os dados
+      const safeEmailKey = email.toLowerCase().replace('@', '_');
+      const userKey = `user_${safeEmailKey}`;
+      
       const userData = JSON.stringify({ name, email: email.toLowerCase(), password });
       
-      await AsyncStorage.setItem(userKey, userData);
+      // Salva os dados do novo usuário de forma segura e criptografada
+      await SecureStore.setItemAsync(userKey, userData);
       
       // Feedback de sucesso
       setFeedback({ message: "Cadastro realizado com sucesso! Redirecionando...", type: 'success' });
@@ -42,7 +45,7 @@ export default function Register() {
         router.replace('/login');
       }, 1500);
 
-    } catch (e) {
+    } catch (error) {
       setFeedback({ message: "Falha técnica ao salvar os dados.", type: 'error' });
     }
   };
